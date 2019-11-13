@@ -37,9 +37,9 @@ router.get("/peliculas/comedia", (req, res) => {
 });
 
 router.get("/peliculas/ubicacion", (req, res) => {
-  try{
+  try {
     var location = req.param('location').toString()
-    function locationMovies(movies){
+    function locationMovies(movies) {
       return movies.ubicacion == location;
     }
     let moviesFiltered = locationMovies(peliculas);
@@ -48,15 +48,15 @@ router.get("/peliculas/ubicacion", (req, res) => {
       cantidad: moviesFiltered.length,
       message: 'Those are the movies that match your param.'
     });
-  }catch (error){
+  } catch (error) {
     res.status(400).json({
       message: "Something has happened"
     });
   }
 });
 
-router.get("/peliculas/nombre", (req, res) =>{
-  try{
+router.get("/peliculas/nombre", (req, res) => {
+  try {
     var name_string = req.param('name').toString();
     function movieByName(movies) {
       return movies.nombre == name_string
@@ -67,7 +67,30 @@ router.get("/peliculas/nombre", (req, res) =>{
       cantidad: filtered.length,
       message: "This is the movie that match the name that you typed"
     });
-  }catch(error){
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({
+      message: "Something has happened"
+    });
+  }
+});
+
+router.get("/peliculas/anio", (req, res) => {
+  try {
+    var year1 = req.param('year1');
+    var year2 = req.param('year2');
+    var auxArray = [];
+    for (var i = (peliculas.length - 1); i--;) {
+      if (parseInt(peliculas[i].anio, 10) > year1 && parseInt(peliculas[i].anio, 10) < year2) {
+        auxArray.push(peliculas[i]);
+      }
+    }
+    res.status(200).json({
+      data: auxArray,
+      count: auxArray.length,
+      message: 'These are the movies between the two years typed'
+    });
+  } catch (error) {
     console.log(error)
     res.status(400).json({
       message: "Something has happened"
@@ -76,8 +99,8 @@ router.get("/peliculas/nombre", (req, res) =>{
 })
 
 router.delete("/peliculas", function (req, res, next) {
-  for(var i = (peliculas.length - 1); i--;)  {
-    if(peliculas[i].genero == ""){
+  for (var i = (peliculas.length - 1); i--;) {
+    if (peliculas[i].genero == "") {
       peliculas.splice(i, 1)
     }
   }
